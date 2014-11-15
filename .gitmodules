@@ -1,6 +1,12 @@
 [submodule "bundle/vim-pathogen"]
 	path = bundle/vim-pathogen
 	url = https://github.com/tpope/vim-pathogen.git
+	ignore = untracked
 [submodule "bundle/vim-headerguard"]
 	path = bundle/vim-headerguard
 	url = https://github.com/drmikehenry/vim-headerguard.git
+	ignore = untracked
+[submodule "bundle/nerdtree"]
+	path = bundle/nerdtree
+	url = https://github.com/scrooloose/nerdtree.git
+	ignore = untracked

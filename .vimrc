@@ -1,4 +1,6 @@
 runtime bundle/vim-pathogen/autoload/pathogen.vim
+execute pathogen#infect()
+execute pathogen#helptags()
 
 syntax on
 
@@ -41,3 +43,12 @@ set cino+=Ws " Do not indent with parenthese position when the parenthese is the
 set cino+=k0 " Double the indent for if, for & while conditions
 set cino+=js " Indent Java anonymous class
 set cino+=Js " Indent JSON
+
+" maps NERDTree to F10
+map <silent> <F10> :NERDTreeToggle<CR>
+map! <silent> <F10> <ESC>:NERDTreeToggle<CR>
+" Open a NERDTree automatically when vim starts up and no file is specified
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+" Automatically close vim when a NERDTree is the last window left open
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
