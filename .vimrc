@@ -28,8 +28,6 @@ set listchars=tab:\|\ ,nbsp:¤,eol:¬,trail:·
 set list
 nmap <leader>ws :set list!<CR>
 
-au FileType xml setlocal equalprg=xmllint\ --format\ --recover\ -\ 2>/dev/null
-
 filetype plugin on
 filetype indent on
 
