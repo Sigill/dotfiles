@@ -1,3 +1,5 @@
+runtime! bundle/vim-sensible/plugin/sensible.vim
+
 runtime bundle/vim-pathogen/autoload/pathogen.vim
 execute pathogen#infect()
 execute pathogen#helptags()
