@@ -31,10 +31,10 @@ nmap <leader>ws :set list!<CR>
 filetype plugin on
 filetype indent on
 
-" set noexpandtab
-" set softtabstop=0
-set shiftwidth=4
-set tabstop=4
+set expandtab
+set shiftwidth=2
+set softtabstop=2
+set tabstop=2
 set cindent
 set cino+=g0 " Do not indent public, private and protected in c++ classes
 set cino+=N-s " Do not indent inside a namespace
