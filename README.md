@@ -1,12 +1,13 @@
-Installation
--------------
+# Installation
 
-In any new machine/account I need to work on, I clone from the repository:
+```sh
+git clone --recurse-submodules git@github.com:Sigill/dotfiles.git
+cd dotfiles
 
-    cd
-    git clone XXXX .vim
-    cd .vim
-    git submodule init
-    git submodule update
-    cd ..
-    ln -s .vim/.vimrc
+# Vim
+ln -s -t ~/ $PWD/vim/.vimrc
+ln -s -t ~/ $PWD/vim
+
+# Git
+ln -s -t ~/ $PWD/git/.gitconfig
+```

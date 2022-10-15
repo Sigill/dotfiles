@@ -1,0 +1,6 @@
+[user]
+  email = cyrille.faucheux@gmail.com
+  name = Cyrille Faucheux
+[alias]
+  tree = log --graph --decorate --pretty=oneline --abbrev-commit
+
