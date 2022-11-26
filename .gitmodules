@@ -1,9 +1,6 @@
-[submodule "vim/bundle/vim-pathogen"]
-	path = vim/bundle/vim-pathogen
-	url = https://github.com/tpope/vim-pathogen.git
-[submodule "vim/bundle/vim-headerguard"]
-	path = vim/bundle/vim-headerguard
+[submodule "vim-headerguard"]
+	path = vim/pack/plugins/start/headerguard
 	url = https://github.com/Sigill/vim-headerguard.git
-[submodule "vim/bundle/vim-sensible"]
-	path = vim/bundle/vim-sensible
+[submodule "vim-sensible"]
+	path = vim/pack/plugins/start/sensible
 	url = https://github.com/tpope/vim-sensible.git
