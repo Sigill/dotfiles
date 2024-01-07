@@ -1,6 +1,6 @@
 [submodule "vim-headerguard"]
 	path = vim/pack/plugins/start/headerguard
-	url = https://github.com/Sigill/vim-headerguard.git
+	url = https://github.com/drmikehenry/vim-headerguard.git
 [submodule "vim-sensible"]
 	path = vim/pack/plugins/start/sensible
 	url = https://github.com/tpope/vim-sensible.git
