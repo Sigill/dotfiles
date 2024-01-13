@@ -1,2 +1,5 @@
+utility-functions
 prompt
 aliases
+path-ccache
+path-home-bin

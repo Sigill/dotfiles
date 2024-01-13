@@ -87,13 +87,18 @@ function install_bash_plugins() {
   fi
 
   {
-    local p
-    while read -r p; do
-      if grep -q "$p" "$BASH_PLUGINS_LIST"; then
-        info -e "\t[x] $p"
-        echo source "\"$BASH_DIR/$p.sh\""
+    local plugin_name
+    while read -r plugin_name; do
+      if grep -q "^$plugin_name\$" "$BASH_PLUGINS_LIST"; then
+        local plugin_script=$BASH_DIR/$plugin_name.sh
+        if [[ -r "$plugin_script" ]]; then
+          info -e "\t[x] $plugin_script"
+          echo source "\"$plugin_script\""
+        else
+          error "\t[ ] $plugin_script (file does not exists)"
+        fi
       else
-        info -e "\t[ ] $p"
+        info -e "\t[ ] $plugin_script"
       fi
     done < "$HERE/bash/plugins.txt"
   } > "$BASH_RC_FILE"
