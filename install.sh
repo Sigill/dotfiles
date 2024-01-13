@@ -1,12 +1,32 @@
 #!/bin/bash
 
-HERE=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
+HERE=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 VERBOSE=
+
+function info() {
+  >&2 echo "$@"
+}
+
+function info_v() {
+  [ -n "$VERBOSE" ] && info "$@"
+}
+
+function error() {
+  >&2 echo -e "\033[31m$*\033[0m"
+}
+
+function run() {
+  "$@"
+  local status=$?
+  if [[ $status -ne 0 ]]; then
+    error "Command failed:" "$@"
+  fi
+}
 
 function yes_or_no {
   local QUESTION=$1
   local DEFAULT=$2
-  local INPUT
+  local RESPONSE
 
   if [ "$DEFAULT" = true ]; then
     OPTIONS="[Y/n]"
@@ -17,10 +37,10 @@ function yes_or_no {
   fi
 
   while true; do
-    read -p "$QUESTION $OPTIONS " -n 1 -s -r INPUT
-    INPUT=${INPUT:-${DEFAULT}}
-    echo $INPUT
-    case $INPUT in
+    read -p "$QUESTION $OPTIONS " -n 1 -s -r RESPONSE
+    RESPONSE=${RESPONSE:-${DEFAULT}}
+    >&2 echo "$RESPONSE"
+    case $RESPONSE in
       [Yy]*) return 0 ;;
       [Nn]*) return 1 ;;
     esac
@@ -29,29 +49,61 @@ function yes_or_no {
 
 function link_to() {
   if [ $# -ne 2 ]; then
-    >&2 echo "Usage: $0 <src> <dst>"
-    return -1
+    info "Usage: $0 <src> <dst>"
+    return 1
   fi
 
+  # shellcheck disable=SC2155
   local src=$(realpath "$1")
   local dst=$2
 
   if [ -e "$dst" ]; then
     if [ -L "$dst" ]; then
       if [ "$(readlink -f -- "$dst")" = "$src" ]; then
-        [ -n "$VERBOSE" ] && >&2 echo "Skipping $dst -> $src"
+        info_v "[SKIPPED] ln -sT \"$src\" \"$dst\""
         return 0
       else
-        >&2 echo "Updating $dst -> $src"
-        ln -sfT "$src" "$dst"
+        run ln -sfT "$src" "$dst"
       fi
     else
-      >&2 echo "Aborting $dst -> $src (already exists)"
-      return -1
+      error "[SKIPPED] ln -sT \"$src\" \"$dst\" (target already exists)"
+      return 1
     fi
   else
-    >&2 echo "Creating $dst -> $src"
-    ln -sT "$src" "$dst"
+    run ln -sT "$src" "$dst"
+  fi
+}
+
+function install_bash_plugins() {
+  info "Generating $HERE/bash/rc.sh"
+
+  local BASH_DIR=$HERE/bash
+  local BASH_RC_FILE=$HERE/bash/rc.sh
+
+  if [ -e "$HERE/bash/plugins.custom.txt" ]; then
+    local BASH_PLUGINS_LIST="$HERE/bash/plugins.custom.txt"
+  else
+    local BASH_PLUGINS_LIST="$HERE/bash/plugins.txt"
+  fi
+
+  {
+    local p
+    while read -r p; do
+      if grep -q "$p" "$BASH_PLUGINS_LIST"; then
+        info -e "\t[x] $p"
+        echo source "\"$BASH_DIR/$p.sh\""
+      else
+        info -e "\t[ ] $p"
+      fi
+    done < "$HERE/bash/plugins.txt"
+  } > "$BASH_RC_FILE"
+
+  local register_bashrc_command="source \"$BASH_RC_FILE\""
+  if grep -q -F "$register_bashrc_command" ~/.bashrc 2> /dev/null; then
+    info_v "[SKIPPED] ~/.bashrc registration"
+  else
+    info "echo \"$register_bashrc_command\" >> ~/.bashrc"
+    echo "$register_bashrc_command" >> ~/.bashrc
   fi
 }
 
@@ -64,7 +116,9 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-link_to $HERE/vim/.vim ~/.vim
-link_to $HERE/vim/.vimrc ~/.vimrc
+link_to "$HERE/vim/.vim" ~/.vim
+link_to "$HERE/vim/.vimrc" ~/.vimrc
 
-link_to $HERE/git/.gitconfig ~/.gitconfig
+link_to "$HERE/git/.gitconfig" ~/.gitconfig
+
+install_bash_plugins
